@@ -1,7 +1,6 @@
 <template>
   <main>
     <!-- Heading -->
-    <Header />
     <header>
       <!-- User Photo -->
       <div class="user-photo">
@@ -49,12 +48,10 @@
 import { ref } from 'vue'
 import { useTodoStore } from './stores/TodoStore'
 import TodoDetails from './components/TodoDetails.vue'
-import Header from './components/Header.vue'
 
 export default {
   components: {
     TodoDetails,
-    Header
   },
   setup () {
     const todoStore = useTodoStore();
