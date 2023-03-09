@@ -38,56 +38,50 @@ export const useTaskStore = defineStore('taskStore', {
   actions: {
     async getTasks() {
       this.loading = true;
-      
-      const res = await fetch('http://localhost:3000/tasks')
-      const data = await res.json();
-
-      this.task= data;
+    
+      // Retrieve the tasks from local storage
+      const tasks = localStorage.getItem('tasks');
+    
+      if (tasks) {
+        // If tasks are already in local storage, use them
+        this.tasks = JSON.parse(tasks);
+      } else {
+        // If no tasks are in local storage, set the tasks to an empty array
+        this.tasks = [];
+      }
+    
       this.loading = false;
     },
 
     async addTask(task) {
       this.tasks.push(task);
-
-      const res = await fetch('http://localhost:3000/tasks', {
-        method: 'POST',
-        body: JSON.stringify(task),
-        headers: {'Content-Type': 'application/json'}
-      })
-
-      if (res.error) {
-        console.log(res.error);
-      }
     
+      // Add the new task to the tasks array in local storage
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
     },
 
     async deleteTask(id) {
       this.tasks = this.tasks.filter(t => {
         return t.id !== id;
-      })
-
-      const res = await fetch('http://localhost:3000/tasks/' + id, {
-        method: 'DELETE',
-      })
-
-      if (res.error) {
-        console.log(res.error);
-      }
+      });
+    
+      // Store the updated tasks in local storage
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
     },
 
     async toggleCompleted(id) {
-      const task = this.tasks.find(t => t.id === id)
+      const task = this.tasks.find(t => t.id === id);
       task.completed = !task.completed;
     
-      const res = await fetch('http://localhost:3000/tasks/' + id, {
-        method: 'PATCH',
-        body: JSON.stringify({completed: task.completed}),
-        headers: {'Content-Type': 'application/json'}
-      })
-
-      if (res.error) {
-        console.log(res.error);
-      }
+      // Update the tasks array in local storage
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      const index = tasks.findIndex(t => t.id === id);
+      tasks[index].completed = task.completed;
+      localStorage.setItem('tasks', JSON.stringify(tasks));
     }
-  }
+  },
+  
+  persist: true,
 })
