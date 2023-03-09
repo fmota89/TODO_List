@@ -28,8 +28,9 @@
     <div>
       <label for="status">Status:</label>
       <select id="status" v-model="status">
-        <option value="pending">Pending</option>
         <option value="active">Active</option>
+        <option value="pending">Pending</option>
+        <option value="done">Done</option>
       </select>
     </div>
     <button type="submit">Add Task</button>
