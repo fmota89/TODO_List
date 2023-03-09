@@ -26,11 +26,7 @@ export const useTaskStore = defineStore({
     },
 
     editTask(task) {
-      const index = this.tasks.findIndex((t) => t.id === task.id)
-      if (index !== -1) {
-        this.tasks.splice(index, 1, task)
-        localStorage.setItem('tasks', JSON.stringify(this.tasks))
-      }
+
     },
 
     loadTasks() {
