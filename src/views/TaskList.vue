@@ -1,79 +1,58 @@
 <template>
-  <div class="task-header">
-    <h1>Tasks List</h1>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Completed</th>
+          <th>Priority</th>
+          <th>Date</th>
+          <th>Milestone</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="task in tasks" :key="task.id">
+          <td>{{ task.id }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.completed }}</td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.date }}</td>
+          <td>{{ task.milestone }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <button @click="removeTask(task.id)">Delete</button>
+          </td>
+          <td>
+            <button @click="editTask(task.id)">Edit</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <!-- filter -->
-  <nav class="filter">
-    <v-btn text color="primary" :class="{ active: filter === 'all' }" @click="filter = 'all'">All tasks</v-btn>
-    <v-btn text color="primary" :class="{ active: filter === 'completed' }" @click="filter = 'completed'">Completed</v-btn>
-    <v-btn text color="primary" :class="{ active: filter === 'incomplete' }" @click="filter = 'incomplete'">To do</v-btn>
-  </nav>
-
-  <!-- task list -->
-  <div class="task-list" v-if="filter === 'all'">
-    <p>All Task</p>
-    <p>You have: {{ taskStore.totalCount }} tasks in your list.</p>
-    <div v-for="task in taskStore.tasks">
-      <TaskDetails :task="task"/>
-    </div>
-  </div>
-
-  <!-- task completed -->
-  <div class="task-list" v-if="filter === 'completed'">
-    <p>Completed Tasks</p>
-    <p>You have: {{ taskStore.completedCount }} completed. Kudus!!!</p>
-    <div v-for="task in taskStore.completed">
-      <TaskDetails :task="task"/>
-    </div>
-  </div>
-
-  <!-- task incomplete -->
-  <div class="task-list" v-if="filter === 'incomplete'">
-    <p>Incomplete Tasks</p>
-    <p>You have: {{ taskStore.completedCount }} completed. Get to work!!</p>
-    <div v-for="task in taskStore.incomplete">
-      <TaskDetails :task="task"/>
-    </div>
-  </div>
-
-  <h1></h1>
-
 </template>
 
 <script>
-import { ref } from 'vue';
-import TaskDetails from '../components/TaskDetails.vue'
-import { useTaskStore } from '../stores/TaskStore';
+import { useTaskStore } from "../stores/TaskStore";
 
 export default {
-  components: {
-    TaskDetails
+  name: "TaskList",
+  computed: {
+    tasks() {
+      return useTaskStore().tasks;
+    },
   },
 
-  setup () {
-    const taskStore = useTaskStore();
+  methods: {
+    removeTask(taskId) {
+      useTaskStore().removeTask(taskId);
+    },
 
-    //fetch tasks
-    taskStore.getTasks();
+    editTask(task) {
+      useTaskStore().editTask(task);
+    },
 
-    const filter = ref('all')
-
-    return { taskStore, filter }
-  }
+  },
 };
 </script>
-
-
-<style scoped>
-.filter {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.active {
-  background-color: #c5cae9;
-  color: white;
-}
-</style>
