@@ -35,7 +35,7 @@ export const useTaskStore = defineStore({
         this.tasks = tasks
       }
     },
-
+    // retrieves the list of tasks stored in the browser's local storage using the localStorage.getItem()
   },
 
   persist: true,
