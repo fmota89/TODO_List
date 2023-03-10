@@ -1,41 +1,101 @@
 <template>
-  <h1>Add new Task</h1>
-  <form @submit.prevent="addTask">
-    <div>
-      <label for="title">Title:</label>
-      <input type="text" id="title" v-model="title" required />
-    </div>
-    <div>
-      <label for="completed">Completed:</label>
-      <input type="checkbox" id="completed" v-model="completed" />
-    </div>
-    <div>
-      <label for="priority">Priority:</label>
-      <select id="priority" v-model="priority">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-    </div>
-    <div>
-      <label for="date">Date:</label>
-      <input type="date" id="date" v-model="date" />
-    </div>
-    <div>
-      <label for="milestone">Milestone:</label>
-      <input type="date" id="milestone" v-model="milestone" />
-    </div>
-    <div>
-      <label for="status">Status:</label>
-      <select id="status" v-model="status">
-        <option value="active">Active</option>
-        <option value="pending">Pending</option>
-        <option value="done">Done</option>
-      </select>
-    </div>
-    <button type="submit">Add Task</button>
-  </form>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>
+            <h1 class="text-center">Add new Task</h1>
+          </v-card-title>
+          <v-card-text>
+            <v-form @submit.prevent="addTask">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="title"
+                    label="Title"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="description"
+                    label="Description"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="priority"
+                    :items="['low', 'medium', 'high']"
+                    label="Priority"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    offset-y
+                    transition="scale-transition"
+                    min-width="290px"
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="date"
+                        label="Date"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="date"
+                      no-title
+                      @input="menu = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    offset-y
+                    transition="scale-transition"
+                    min-width="290px"
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="milestone"
+                        label="Milestone"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="milestone"
+                      no-title
+                      @input="menu2 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="status"
+                    :items="['active', 'pending', 'done']"
+                    label="Status"
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-card-actions>
+                <v-btn type="submit" color="primary">Add Task</v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 
 <script>
 import { useTaskStore } from "../stores/TaskStore";
@@ -45,6 +105,7 @@ export default {
   data() {
     return {
       title: "",
+      description: "",
       completed: false,
       priority: "",
       date: "",
@@ -57,17 +118,18 @@ export default {
       const task = {
         id: Date.now(),
         title: this.title,
+        description: this.description,
         completed: this.completed,
         priority: this.priority,
         date: this.date,
         milestone: this.milestone,
-        status: this.status,
       };
       useTaskStore().addTask(task);
       this.resetForm();
     },
     resetForm() {
       this.title = "";
+      this.description = "",
       this.completed = false;
       this.priority = "";
       this.date = "";

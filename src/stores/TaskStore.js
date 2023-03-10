@@ -39,4 +39,4 @@ export const useTaskStore = defineStore({
   },
 
   persist: true,
-})
+}) 
